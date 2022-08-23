@@ -4,17 +4,19 @@
  */
 package com.finexusgroup.activemq;
 
+
 import jakarta.jms.Connection;
 import jakarta.jms.ConnectionFactory;
 import jakarta.jms.Destination;
-import jakarta.jms.JMSException;
 import jakarta.jms.MessageProducer;
 import jakarta.jms.Session;
 import jakarta.jms.TextMessage;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+
 import org.apache.qpid.jms.JmsConnectionFactory;
+
 
 /**
  *
@@ -22,25 +24,20 @@ import org.apache.qpid.jms.JmsConnectionFactory;
  */
 public class Activemq {
 
-    public static void main(String[] args) throws JMSException, IOException {
+    public static void main(String[] args) throws Exception  {
         System.out.println("Create a ConnectionFactory");
-        ConnectionFactory connectionFactory = new JmsConnectionFactory("amqp://localhost:5672");
+       Connection connection = null;
+      ConnectionFactory connectionFactory = new JmsConnectionFactory("amqp://localhost:5672");
         System.out.println("Create a Connection");
-        Connection connection = connectionFactory.createConnection("admin", "admin");
+        connection = connectionFactory.createConnection("admin","admin");
         connection.start();
         System.out.println("Create a Session");
         Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
         System.out.println("Create a Topic/ Queue based on the given parameter");
         Destination destination = null;
-        if (args.length > 0 && args[0].equalsIgnoreCase("QUEUE")) {
-            destination = session.createQueue("gpcoder-jms-queue");
-        } else if (args.length > 0 && args[0].equalsIgnoreCase("TOPIC")) {
-            destination = session.createTopic("gpcoder-jms-topic");
-        } else {
-            System.out.println("Error: You must specify Queue or Topic");
-            connection.close();
-            System.exit(1);
-        }
+
+        destination = session.createQueue("gpcoder-jms-queue");
+//            destination = session.createTopic("gpcoder-jms-topic");
         System.out.println("Create a Producer to send messages to one Topic or Queue.");
         MessageProducer producer = session.createProducer(destination);
 
